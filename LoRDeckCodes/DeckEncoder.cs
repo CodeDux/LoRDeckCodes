@@ -11,7 +11,6 @@ namespace LoRDeckCodes
     {
         private const int CardCodeLength = 7;
         private static readonly Dictionary<string, int> FactionCodeToIntIdentifier = new Dictionary<string, int>();
-        private static readonly Dictionary<int, string> IntIdentifierToFactionCode = new Dictionary<int, string>();
         private static readonly string[] Factions = {"DE", "FR", "IO", "NX", "PZ", "SI"};
         private const int MaxKnownVersion = 1;
 
@@ -23,12 +22,6 @@ namespace LoRDeckCodes
             FactionCodeToIntIdentifier.Add("NX", 3);
             FactionCodeToIntIdentifier.Add("PZ", 4);
             FactionCodeToIntIdentifier.Add("SI", 5);
-            IntIdentifierToFactionCode.Add(0, "DE");
-            IntIdentifierToFactionCode.Add(1, "FR");
-            IntIdentifierToFactionCode.Add(2, "IO");
-            IntIdentifierToFactionCode.Add(3, "NX");
-            IntIdentifierToFactionCode.Add(4, "PZ");
-            IntIdentifierToFactionCode.Add(5, "SI");
         }
 
         public static List<CardCodeAndCount> GetDeckFromCode(string code)
@@ -68,6 +61,7 @@ namespace LoRDeckCodes
                     var numOfsInThisGroup = Varint.PopVarint(ref bytes);
                     var set = Varint.PopVarint(ref bytes);
                     var faction = Varint.PopVarint(ref bytes);
+                    // TODO: remove the need to create strings, set + faction could cache setFactionString
                     var setFactionString = set.ToString().PadLeft(2, '0') + Factions[faction];
 
                     for (var k = 0; k < numOfsInThisGroup; k++)
