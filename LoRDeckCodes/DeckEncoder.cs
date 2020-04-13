@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LoRDeckCodes
 {
-    public class DeckEncoder
+    public static class DeckEncoder
     {
-        private readonly static int CARD_CODE_LENGTH = 7;
-        private static Dictionary<string, int> FactionCodeToIntIdentifier = new Dictionary<string, int>();
-        private static Dictionary<int, string> IntIdentifierToFactionCode = new Dictionary<int, string>();
-        private static string[] Factions = {"DE", "FR", "IO", "NX", "PZ", "SI"};
-        private readonly static int MAX_KNOWN_VERSION = 1;
+        private const int CardCodeLength = 7;
+        private static readonly Dictionary<string, int> FactionCodeToIntIdentifier = new Dictionary<string, int>();
+        private static readonly Dictionary<int, string> IntIdentifierToFactionCode = new Dictionary<int, string>();
+        private static readonly string[] Factions = {"DE", "FR", "IO", "NX", "PZ", "SI"};
+        private const int MaxKnownVersion = 1;
 
         static DeckEncoder()
         {
@@ -50,7 +50,7 @@ namespace LoRDeckCodes
             //var format = bytes[0] >> 4;
             var version = bytes[0] & 0xF;
 
-            if (version > MAX_KNOWN_VERSION)
+            if (version > MaxKnownVersion)
             {
                 throw new ArgumentException(
                     "The provided code requires a higher version of this library; please update.");
@@ -155,7 +155,7 @@ namespace LoRDeckCodes
 
             //Nofs (since rare) are simply sorted by the card code - there's no optimiziation based upon the card count
             //ofN = ofN.OrderBy(c => c.CardCode).ToList();
-            ofN.Sort(SortByCardCode);
+            ofN.Sort((x,y) => string.CompareOrdinal(x.CardCode, y.CardCode));
 
             //Encode
             EncodeGroupOf(result, groupedOf3s);
@@ -188,24 +188,13 @@ namespace LoRDeckCodes
         //Second by the alphanumeric order of the card codes within those lists.
         private static List<List<CardCodeAndCount>> SortGroupOf(List<List<CardCodeAndCount>> groupOf)
         {
-            groupOf.Sort(SortByCount);
+            groupOf.Sort((x, y) => x.Count.CompareTo(y.Count));
             foreach (var group in groupOf)
             {
-                group.Sort(SortByCardCode);
+                group.Sort((x,y) => string.CompareOrdinal(x.CardCode, y.CardCode));
             }
 
             return groupOf;
-        }
-
-        private static int SortByCardCode(CardCodeAndCount x, CardCodeAndCount y)
-        {
-            return string.CompareOrdinal(x?.CardCode, y?.CardCode);
-        }
-
-
-        private static int SortByCount(List<CardCodeAndCount> x, List<CardCodeAndCount> y)
-        {
-            return x.Count.CompareTo(y.Count);
         }
 
         private static void ParseCardCode(string code, out int set, out string faction, out int number)
@@ -282,13 +271,14 @@ namespace LoRDeckCodes
         {
             foreach (var ccc in deck)
             {
-                if (ccc.CardCode.Length != CARD_CODE_LENGTH)
+                if (ccc.CardCode.Length != CardCodeLength)
                     return false;
 
                 var cardCodeSpan = ccc.CardCode.AsSpan();
                 if (!int.TryParse(cardCodeSpan.Slice(0, 2), out _))
                     return false;
 
+                // TODO: change so it doesn't rely on substring
                 var faction = ccc.CardCode.Substring(2, 2);
                 if (!FactionCodeToIntIdentifier.ContainsKey(faction))
                     return false;
