@@ -9,10 +9,10 @@ namespace LoRDeckCodes
 {
     public class LoRDeckEncoder
     {
-        private readonly static int CARD_CODE_LENGTH = 7;
+        private static readonly int CARD_CODE_LENGTH = 7;
         private static Dictionary<string, int> FactionCodeToIntIdentifier = new Dictionary<string, int>();
         private static Dictionary<int, string> IntIdentifierToFactionCode = new Dictionary<int, string>();
-        private readonly static int MAX_KNOWN_VERSION = 1;
+        private static readonly int MAX_KNOWN_VERSION = 1;
 
         static LoRDeckEncoder()
         {

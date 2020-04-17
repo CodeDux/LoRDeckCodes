@@ -55,6 +55,14 @@ namespace LoRDeckCodes
             return n - (int)((uint)(i << 1) >> 31);
         }
 
+        public static byte[] DecodeNoAlloc(string encoded)
+        {
+            var expectedLength = Prepare(encoded);
+            Span<byte> outSpan = stackalloc byte[expectedLength];
+            Decode(encoded, ref outSpan);
+            return outSpan.ToArray();
+        }
+
         public static int Prepare(in ReadOnlySpan<char> encoded)
         {
             var length = 0;
@@ -197,11 +205,11 @@ namespace LoRDeckCodes
                 bitsLeft -= SHIFT;
                 result[resultIndex++] = DIGITS[index];
             }
-//            if (padOutput)
-//            {
-//                int padding = 8 - (result.Length % 8);
-//                if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
-//            }
+            // if (padOutput)
+            // {
+            //     int padding = 8 - (result.Length % 8);
+            //     if (padding > 0) result.Append(new string('=', padding == 8 ? 0 : padding));
+            // }
             return result.ToString();
         }
 

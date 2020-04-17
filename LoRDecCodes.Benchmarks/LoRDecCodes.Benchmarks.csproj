@@ -18,6 +18,14 @@
       <Content Include="DeckCodesTestData.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Lorem.txt" />
+      <Content Include="Lorem.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Lorem.Base32.txt" />
+      <Content Include="Lorem.Base32.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

@@ -45,8 +45,7 @@ namespace LoRDeckCodes
 
             if (version > MaxKnownVersion)
             {
-                throw new ArgumentException(
-                    "The provided code requires a higher version of this library; please update.");
+                throw new ArgumentException("The provided code requires a higher version of this library; please update.");
             }
 
             bytes = bytes.Slice(1);
